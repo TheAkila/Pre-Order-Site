@@ -98,7 +98,7 @@ export default function OrderForm() {
                 value={formData.name}
                 onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                 className="input-seamless w-full"
-                placeholder="John Doe"
+                placeholder="Karlos Nazar"
                 required
                 disabled={isSubmitting}
               />
