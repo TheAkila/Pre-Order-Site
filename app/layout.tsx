@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Inter, Outfit, IBM_Plex_Sans } from "next/font/google";
 import "./globals.css";
 
+// Fonts configuration
 const inter = Inter({ 
   subsets: ["latin"],
   variable: "--font-inter",
