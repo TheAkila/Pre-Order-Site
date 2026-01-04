@@ -36,17 +36,35 @@ export default function AdminPage() {
     setError(null);
     console.log('Fetching orders...');
     try {
-      const response = await fetch('/api/orders');
+      const response = await fetch('/api/orders', {
+        cache: 'no-store',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
       console.log('Response status:', response.status);
+      console.log('Response headers:', response.headers);
+      
       if (!response.ok) {
         throw new Error('Failed to fetch orders');
       }
-      const data = await response.json();
-      console.log('Raw data received:', data);
+      
+      const text = await response.text();
+      console.log('Raw response text:', text);
+      
+      const data = JSON.parse(text);
+      console.log('Parsed data:', data);
       console.log('Data type:', typeof data);
       console.log('Is array:', Array.isArray(data));
-      console.log('Orders fetched:', Array.isArray(data) ? data.length : 'Not an array');
-      setOrders(data);
+      console.log('Data length:', Array.isArray(data) ? data.length : 'Not an array');
+      
+      if (Array.isArray(data)) {
+        setOrders(data);
+        console.log('Orders state set with', data.length, 'items');
+      } else {
+        console.error('Data is not an array:', data);
+        setError('Invalid data format received from server');
+      }
     } catch (err) {
       console.error('Error fetching orders:', err);
       setError(err instanceof Error ? err.message : 'Failed to fetch orders');
