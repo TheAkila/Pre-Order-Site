@@ -34,14 +34,18 @@ export default function AdminPage() {
   const fetchOrders = async () => {
     setLoading(true);
     setError(null);
+    console.log('Fetching orders...');
     try {
       const response = await fetch('/api/orders');
+      console.log('Response status:', response.status);
       if (!response.ok) {
         throw new Error('Failed to fetch orders');
       }
       const data = await response.json();
+      console.log('Orders fetched:', data.length);
       setOrders(data);
     } catch (err) {
+      console.error('Error fetching orders:', err);
       setError(err instanceof Error ? err.message : 'Failed to fetch orders');
     } finally {
       setLoading(false);
