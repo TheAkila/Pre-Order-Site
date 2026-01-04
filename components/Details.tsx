@@ -81,11 +81,11 @@ export default function Details() {
                 <div className="grid grid-cols-2 gap-3">
                   <div className="bg-slate-50 rounded-lg p-3">
                     <div className="text-[10px] font-medium text-slate-500 uppercase tracking-wider mb-1">Chest</div>
-                    <div className="font-body text-base font-semibold text-slate-900">{row.chest}"</div>
+                    <div className="font-body text-base font-semibold text-slate-900">{row.chest}&quot;</div>
                   </div>
                   <div className="bg-slate-50 rounded-lg p-3">
                     <div className="text-[10px] font-medium text-slate-500 uppercase tracking-wider mb-1">Length</div>
-                    <div className="font-body text-base font-semibold text-slate-900">{row.length}"</div>
+                    <div className="font-body text-base font-semibold text-slate-900">{row.length}&quot;</div>
                   </div>
                 </div>
               </div>
