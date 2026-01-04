@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { Order, PaymentStatus } from '@/types/order';
-import { Download, Loader2, Lock, Search } from 'lucide-react';
+import { Download, Loader2, Lock, Search, LogOut } from 'lucide-react';
 
 export default function AdminPage() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -15,9 +15,16 @@ export default function AdminPage() {
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
-    // Simple client-side check - in production, use proper authentication
-    if (password === process.env.NEXT_PUBLIC_ADMIN_PASSWORD || password) {
+    const adminPassword = process.env.NEXT_PUBLIC_ADMIN_PASSWORD;
+    
+    if (!adminPassword) {
+      setError('Admin password not configured. Please set NEXT_PUBLIC_ADMIN_PASSWORD in environment variables.');
+      return;
+    }
+    
+    if (password === adminPassword) {
       setIsAuthenticated(true);
+      setError(null);
       fetchOrders();
     } else {
       setError('Invalid password');
@@ -151,9 +158,21 @@ export default function AdminPage() {
     <main className="min-h-screen bg-slate-50 py-8 sm:py-12 px-4">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
-        <div className="mb-8 sm:mb-12">
-          <h1 className="font-heading text-3xl sm:text-4xl md:text-5xl font-bold mb-2 text-brand-black">Order Dashboard</h1>
-          <p className="font-body text-slate-600">Manage and track pre-orders</p>
+        <div className="mb-8 sm:mb-12 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+          <div>
+            <h1 className="font-heading text-3xl sm:text-4xl md:text-5xl font-bold mb-2 text-brand-black">Order Dashboard</h1>
+            <p className="font-body text-slate-600">Manage and track pre-orders</p>
+          </div>
+          <button
+            onClick={() => {
+              setIsAuthenticated(false);
+              setPassword('');
+            }}
+            className="self-start sm:self-auto bg-white border-2 border-slate-300 text-brand-black px-5 py-2.5 font-semibold rounded-lg hover:border-brand-red hover:bg-brand-red hover:text-white transition-all flex items-center gap-2 touch-manipulation active:scale-95"
+          >
+            <LogOut size={18} />
+            Logout
+          </button>
         </div>
 
         {/* Stats */}
