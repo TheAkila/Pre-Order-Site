@@ -42,7 +42,10 @@ export default function AdminPage() {
         throw new Error('Failed to fetch orders');
       }
       const data = await response.json();
-      console.log('Orders fetched:', data.length);
+      console.log('Raw data received:', data);
+      console.log('Data type:', typeof data);
+      console.log('Is array:', Array.isArray(data));
+      console.log('Orders fetched:', Array.isArray(data) ? data.length : 'Not an array');
       setOrders(data);
     } catch (err) {
       console.error('Error fetching orders:', err);
