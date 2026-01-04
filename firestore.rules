@@ -1,0 +1,46 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // Orders collection
+    match /orders/{orderId} {
+      // Allow anyone to create orders (for pre-order form submission)
+      allow create: if request.resource.data.keys().hasAll(['name', 'phone', 'size', 'quantity', 'amount', 'paymentMethod', 'paymentStatus', 'createdAt'])
+                    && request.resource.data.name is string
+                    && request.resource.data.phone is string
+                    && request.resource.data.size in ['S', 'M', 'L', 'XL', 'XXL']
+                    && request.resource.data.quantity is int
+                    && request.resource.data.quantity > 0
+                    && request.resource.data.amount is number
+                    && request.resource.data.paymentMethod == 'PAYHERE'
+                    && request.resource.data.paymentStatus == 'PENDING_PAYMENT';
+      
+      // Allow reading orders (for admin dashboard)
+      // In production, add authentication check
+      allow read: if true;
+      
+      // Prevent updates from client
+      // Updates should only come from server-side (PayHere IPN)
+      allow update: if false;
+      
+      // Prevent deletions from client
+      allow delete: if false;
+    }
+  }
+}
+
+/**
+ * Security Notes:
+ * 
+ * 1. Orders can only be created with PENDING_PAYMENT status
+ * 2. Updates are blocked from client-side to prevent tampering
+ * 3. PayHere IPN updates come from server-side API routes (bypasses these rules)
+ * 4. Add proper authentication for read access in production
+ * 
+ * For production with admin authentication:
+ * 
+ * allow read: if request.auth != null && request.auth.token.admin == true;
+ * 
+ * Or use custom claims or another authentication method
+ */
