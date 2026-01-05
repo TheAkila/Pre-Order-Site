@@ -1,7 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { doc, updateDoc, Timestamp } from 'firebase/firestore';
+import { doc, updateDoc, Timestamp, getDoc } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
 import crypto from 'crypto';
+import { sendOrderConfirmationSMS } from '@/lib/sms';
 
 /**
  * PayHere IPN (Instant Payment Notification) Handler
@@ -87,6 +88,32 @@ export async function POST(request: NextRequest) {
     });
 
     console.log(`Order ${orderId} updated to ${paymentStatus}`);
+
+    // Send SMS confirmation if payment is successful
+    if (statusCode === '2' && paymentStatus === 'PAID') {
+      try {
+        // Get order details for SMS
+        const orderDoc = await getDoc(orderRef);
+        if (orderDoc.exists()) {
+          const orderData = orderDoc.data();
+          const phone = orderData.phone;
+          const customerName = orderData.name?.split(' ')[0] || 'Customer';
+
+          // Send SMS notification
+          const smsResult = await sendOrderConfirmationSMS(phone, orderId, customerName);
+          
+          if (smsResult.success) {
+            console.log(`SMS confirmation sent to ${phone}`);
+          } else {
+            console.warn(`SMS sending failed: ${smsResult.message}`);
+            // Don't fail the IPN if SMS fails - order is still confirmed
+          }
+        }
+      } catch (smsError) {
+        console.error('Error sending SMS:', smsError);
+        // Continue - SMS failure shouldn't break the payment confirmation
+      }
+    }
 
     return NextResponse.json({ success: true });
   } catch (error) {
