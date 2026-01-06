@@ -29,6 +29,15 @@ const config: Config = {
         'brand': '0 10px 15px -3px rgba(208, 0, 0, 0.2), 0 4px 6px -4px rgba(208, 0, 0, 0.1)',
         'brand-lg': '0 20px 25px -5px rgba(208, 0, 0, 0.2), 0 8px 10px -6px rgba(208, 0, 0, 0.1)',
       },
+      keyframes: {
+        marquee: {
+          '0%': { transform: 'translateX(-50%)' },
+          '100%': { transform: 'translateX(0%)' },
+        },
+      },
+      animation: {
+        marquee: 'marquee 25s linear infinite',
+      },
     },
   },
   plugins: [],

@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { Inter, Outfit, IBM_Plex_Sans } from "next/font/google";
 import "./globals.css";
+import AnnouncementBar from "@/components/AnnouncementBar";
 
 // Fonts configuration
 const inter = Inter({ 
@@ -51,6 +52,7 @@ export default function RootLayout({
       <body
         className={`${inter.variable} ${outfit.variable} ${ibmPlexSans.variable} antialiased bg-white text-slate-900`}
       >
+        <AnnouncementBar />
         {children}
       </body>
     </html>
