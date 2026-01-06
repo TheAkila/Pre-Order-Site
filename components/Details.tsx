@@ -39,9 +39,9 @@ export default function Details() {
           {features.map((feature, index) => (
             <div
               key={index}
-              className="bg-white rounded-xl sm:rounded-2xl p-5 sm:p-6 md:p-8 border border-slate-200 hover:border-brand-red transition-all duration-300 card-hover"
+              className="bg-white rounded-xl sm:rounded-2xl p-5 sm:p-6 md:p-8 border border-slate-200 hover:border-brand-black transition-all duration-300 card-hover"
             >
-              <div className="w-12 h-12 sm:w-14 sm:h-14 bg-brand-red/10 rounded-xl flex items-center justify-center text-brand-red mb-4 sm:mb-6">
+              <div className="w-12 h-12 sm:w-14 sm:h-14 bg-brand-black/10 rounded-xl flex items-center justify-center text-brand-black mb-4 sm:mb-6">
                 {feature.icon}
               </div>
               <h3 className="font-heading text-lg sm:text-xl font-bold text-brand-black mb-2 sm:mb-3">{feature.title}</h3>
@@ -54,7 +54,7 @@ export default function Details() {
         <div className="bg-white rounded-xl sm:rounded-2xl md:rounded-3xl border border-slate-200 overflow-hidden shadow-lg">
           <div className="bg-gradient-to-r from-brand-black to-slate-800 p-4 sm:p-6 md:p-8">
             <div className="flex items-center gap-2 sm:gap-3 text-white">
-              <div className="w-9 h-9 sm:w-10 sm:h-10 md:w-12 md:h-12 bg-brand-red rounded-lg sm:rounded-xl flex items-center justify-center flex-shrink-0">
+              <div className="w-9 h-9 sm:w-10 sm:h-10 md:w-12 md:h-12 bg-white/10 rounded-lg sm:rounded-xl flex items-center justify-center flex-shrink-0">
                 <Ruler className="w-4 h-4 sm:w-5 sm:h-5 md:w-6 md:h-6" />
               </div>
               <div>
@@ -75,7 +75,7 @@ export default function Details() {
             ].map((row) => (
               <div key={row.size} className="p-4 hover:bg-slate-50 transition-colors active:bg-slate-100 touch-manipulation">
                 <div className="flex items-center justify-between mb-3">
-                  <span className="font-heading text-2xl font-bold text-brand-red">{row.size}</span>
+                  <span className="font-heading text-2xl font-bold text-brand-black">{row.size}</span>
                   <span className="text-[10px] font-medium text-slate-500 uppercase tracking-wider">Size</span>
                 </div>
                 <div className="grid grid-cols-2 gap-3">

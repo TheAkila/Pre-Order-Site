@@ -59,8 +59,8 @@ export default function Product() {
         <div className="grid sm:grid-cols-2 gap-4 sm:gap-6 max-w-4xl mx-auto">
           <div className="bg-slate-50 rounded-2xl p-8 border border-slate-200">
             <div className="flex items-center gap-3 mb-3">
-              <div className="w-10 h-10 bg-brand-red/10 rounded-xl flex items-center justify-center">
-                <Tag className="w-5 h-5 text-brand-red" />
+              <div className="w-10 h-10 bg-brand-black/10 rounded-xl flex items-center justify-center">
+                <Tag className="w-5 h-5 text-brand-black" />
               </div>
               <p className="font-body text-sm font-medium text-slate-600">PRICE</p>
             </div>
@@ -70,7 +70,7 @@ export default function Product() {
             <p className="font-body text-sm text-slate-500 mt-2">Per unit · Limited stock</p>
           </div>
 
-          <div className="bg-gradient-to-br from-brand-red to-brand-red-dark rounded-2xl p-8 text-white">
+          <div className="bg-gradient-to-br from-brand-black to-slate-900 rounded-2xl p-8 text-white">
             <div className="flex items-center gap-3 mb-3">
               <div className="w-10 h-10 bg-white/20 rounded-xl flex items-center justify-center">
                 <Calendar className="w-5 h-5 text-white" />

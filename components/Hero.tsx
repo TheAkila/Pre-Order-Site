@@ -31,7 +31,7 @@ export default function Hero() {
       <div className="mt-10 flex flex-col sm:flex-row gap-4 justify-center items-center w-full px-4 sm:px-0">
         <button
           onClick={scrollToForm}
-          className="w-full sm:w-auto px-10 py-4 text-xl font-heading font-bold text-white bg-brand-red hover:bg-brand-red-dark transition-all rounded-lg shadow-brand hover:shadow-brand-lg"
+          className="w-full sm:w-auto px-10 py-4 text-xl font-heading font-bold text-white bg-brand-black hover:bg-slate-800 transition-all rounded-lg shadow-lg hover:shadow-xl"
         >
           Reserve Your Tee
         </button>
@@ -49,13 +49,13 @@ export default function Hero() {
       {/* Stats */}
       <div className="mt-14 sm:mt-20 flex flex-wrap justify-center gap-x-12 gap-y-8 max-w-2xl text-center px-4">
         <div className="min-w-[100px]">
-          <div className="text-2xl sm:text-3xl font-heading font-bold text-brand-red">100%</div>
+          <div className="text-2xl sm:text-3xl font-heading font-bold text-brand-black">100%</div>
           <div className="text-sm font-body font-medium text-gray-600 tracking-wider">
             Organic Cotton
           </div>
         </div>
         <div className="min-w-[100px]">
-          <div className="text-2xl sm:text-3xl font-heading font-bold text-brand-red">
+          <div className="text-2xl sm:text-3xl font-heading font-bold text-brand-black">
             Limited
           </div>
           <div className="text-sm font-body font-medium text-gray-600 tracking-wider">
@@ -63,7 +63,7 @@ export default function Hero() {
           </div>
         </div>
         <div className="min-w-[100px]">
-          <div className="text-2xl sm:text-3xl font-heading font-bold text-brand-red">
+          <div className="text-2xl sm:text-3xl font-heading font-bold text-brand-black">
             Worldwide
           </div>
           <div className="text-sm font-body font-medium text-gray-600 tracking-wider">

@@ -66,7 +66,7 @@ export default function OrderForm() {
       <div className="max-w-3xl mx-auto px-3 sm:px-6 lg:px-8">
         {/* Section Header */}
         <div className="text-center mb-8 sm:mb-10 md:mb-12">
-          <div className="inline-flex items-center justify-center w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 bg-brand-red rounded-2xl mb-3 sm:mb-4 md:mb-6">
+          <div className="inline-flex items-center justify-center w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 bg-brand-black rounded-2xl mb-3 sm:mb-4 md:mb-6 shadow-brand">
             <ShoppingBag className="w-6 h-6 sm:w-7 sm:h-7 md:w-8 md:h-8 text-white" strokeWidth={1.5} />
           </div>
           <h2 className="font-heading text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-brand-black mb-2 sm:mb-3 md:mb-4 px-2">
@@ -170,7 +170,7 @@ export default function OrderForm() {
             <div className="bg-white rounded-xl sm:rounded-2xl p-5 sm:p-6 border-2 border-brand-black">
               <div className="flex justify-between items-center">
                 <span className="font-body text-xs sm:text-sm font-medium text-slate-600">Total Amount</span>
-                <span className="font-heading text-2xl sm:text-3xl font-bold text-brand-red">
+                <span className="font-heading text-2xl sm:text-3xl font-bold text-brand-black">
                   LKR {totalAmount.toLocaleString()}
                 </span>
               </div>
@@ -183,7 +183,7 @@ export default function OrderForm() {
             <button
               type="submit"
               disabled={isSubmitting}
-              className="btn-accent w-full text-base sm:text-lg disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-3 min-h-[56px]"
+              className="btn-primary w-full text-base sm:text-lg disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-3 min-h-[56px]"
             >
               {isSubmitting ? (
                 <>
