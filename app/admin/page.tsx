@@ -463,7 +463,7 @@ export default function AdminPage() {
             <div className="font-body text-slate-600">
               Showing <span className="font-semibold text-brand-black">{filteredOrders.length}</span> of{' '}
               <span className="font-semibold text-brand-black">{orders.length}</span> orders
-              {searchQuery && <span className="text-brand-red"> (filtered by "{searchQuery}")</span>}
+              {searchQuery && <span className="text-brand-red"> (filtered by &quot;{searchQuery}&quot;)</span>}
             </div>
             <div className="flex items-center gap-2 text-slate-500">
               <RefreshCw size={16} />
@@ -503,7 +503,7 @@ export default function AdminPage() {
               </div>
               <p className="font-heading text-lg font-medium text-slate-600 mb-2">No orders found</p>
               <p className="font-body text-sm text-slate-500 mb-4">
-                {searchQuery ? `No results for "${searchQuery}"` : 'No orders match the current filters'}
+                {searchQuery ? `No results for &quot;${searchQuery}&quot;` : 'No orders match the current filters'}
               </p>
               <div className="flex gap-3">
                 {searchQuery && (
