@@ -2,7 +2,21 @@
 
 import { useState, useEffect } from 'react';
 import { Order, PaymentStatus } from '@/types/order';
-import { Download, Loader2, Lock, Search, LogOut } from 'lucide-react';
+import { 
+  Download, 
+  Loader2, 
+  Lock, 
+  Search, 
+  LogOut, 
+  TrendingUp, 
+  Package, 
+  Users, 
+  CreditCard,
+  RefreshCw,
+  Filter,
+  Calendar,
+  Eye
+} from 'lucide-react';
 
 export default function AdminPage() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -135,237 +149,498 @@ export default function AdminPage() {
 
   if (!isAuthenticated) {
     return (
-      <main className="min-h-screen flex items-center justify-center px-4 bg-slate-50">
+      <main className="min-h-screen flex items-center justify-center px-4 bg-gradient-to-br from-slate-50 to-slate-100">
         <div className="max-w-md w-full">
           <div className="text-center mb-8">
-            <div className="w-16 h-16 bg-brand-red rounded-2xl flex items-center justify-center mx-auto mb-4">
-              <Lock size={32} className="text-white" />
+            <div className="w-20 h-20 bg-gradient-to-br from-brand-red to-red-700 rounded-3xl flex items-center justify-center mx-auto mb-6 shadow-brand-lg">
+              <Lock size={36} className="text-white" strokeWidth={2} />
             </div>
-            <h1 className="font-heading text-3xl sm:text-4xl font-bold mb-2 text-brand-black">Admin Access</h1>
-            <p className="font-body text-slate-600">Enter password to continue</p>
+            <h1 className="font-heading text-4xl font-bold mb-3 text-brand-black">
+              Admin Dashboard
+            </h1>
+            <p className="font-body text-slate-600 text-lg">
+              Secure access to order management
+            </p>
           </div>
 
-          <form onSubmit={handleLogin} className="bg-white border border-slate-200 rounded-2xl p-8 shadow-lg">
+          <form 
+            onSubmit={handleLogin} 
+            className="bg-white border border-slate-200 rounded-3xl p-8 shadow-xl hover:shadow-2xl transition-all duration-300"
+          >
             {error && (
-              <div className="mb-4 bg-red-50 border border-red-200 text-red-600 p-3 text-sm rounded-lg">
-                {error}
+              <div className="mb-6 bg-red-50 border-l-4 border-red-400 text-red-700 p-4 rounded-xl">
+                <div className="flex items-center">
+                  <div className="text-sm font-medium">{error}</div>
+                </div>
               </div>
             )}
 
-            <div className="mb-6">
-              <label htmlFor="password" className="block font-body text-sm font-semibold mb-2 text-brand-black">
-                Password
+            <div className="mb-8">
+              <label 
+                htmlFor="password" 
+                className="flex items-center gap-2 font-body text-sm font-semibold mb-3 text-brand-black"
+              >
+                <Lock size={16} className="text-slate-400" />
+                Admin Password
               </label>
               <input
                 type="password"
                 id="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="w-full bg-white border border-slate-300 rounded-lg px-4 py-3 text-brand-black focus:outline-none focus:border-brand-red focus:ring-2 focus:ring-brand-red/20 transition-all"
-                placeholder="Enter admin password"
+                className="w-full bg-slate-50 border-transparent rounded-xl px-4 py-4 text-brand-black font-body placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-brand-red focus:bg-white transition-all duration-300"
+                placeholder="Enter your admin password"
                 required
               />
             </div>
 
             <button
               type="submit"
-              className="w-full bg-brand-black text-white py-3 px-6 font-semibold rounded-lg hover:bg-slate-800 active:scale-95 transition-all touch-manipulation"
+              className="w-full bg-gradient-to-r from-brand-black to-slate-800 text-white py-4 px-6 font-heading font-bold rounded-xl hover:from-slate-800 hover:to-brand-black active:scale-95 transition-all duration-300 shadow-lg hover:shadow-xl"
             >
-              Login
+              Access Dashboard
             </button>
           </form>
+
+          <div className="mt-6 text-center">
+            <p className="font-body text-xs text-slate-500">
+              Lifting Social • Secure Admin Portal
+            </p>
+          </div>
         </div>
       </main>
     );
   }
 
   return (
-    <main className="min-h-screen bg-slate-50 py-8 sm:py-12 px-4">
-      <div className="max-w-7xl mx-auto">
-        {/* Header */}
-        <div className="mb-8 sm:mb-12 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-          <div>
-            <h1 className="font-heading text-3xl sm:text-4xl md:text-5xl font-bold mb-2 text-brand-black">Order Dashboard</h1>
-            <p className="font-body text-slate-600">Manage and track pre-orders</p>
-          </div>
-          <button
-            onClick={() => {
-              setIsAuthenticated(false);
-              setPassword('');
-            }}
-            className="self-start sm:self-auto bg-white border-2 border-slate-300 text-brand-black px-5 py-2.5 font-semibold rounded-lg hover:border-brand-red hover:bg-brand-red hover:text-white transition-all flex items-center gap-2 touch-manipulation active:scale-95"
-          >
-            <LogOut size={18} />
-            Logout
-          </button>
-        </div>
-
-        {/* Stats */}
-        <div className="grid grid-cols-2 md:grid-cols-5 gap-3 sm:gap-4 mb-8">
-          <div className="bg-white border border-slate-200 rounded-xl p-4 sm:p-5 shadow-sm">
-            <p className="font-body text-slate-500 text-xs font-semibold uppercase tracking-wider mb-2">Total Orders</p>
-            <p className="font-heading text-2xl sm:text-3xl font-bold text-brand-black">{stats.total}</p>
-          </div>
-          <div className="bg-white border-2 border-green-200 rounded-xl p-4 sm:p-5 shadow-sm">
-            <p className="font-body text-slate-500 text-xs font-semibold uppercase tracking-wider mb-2">Paid</p>
-            <p className="font-heading text-2xl sm:text-3xl font-bold text-green-600">{stats.paid}</p>
-          </div>
-          <div className="bg-white border-2 border-yellow-200 rounded-xl p-4 sm:p-5 shadow-sm">
-            <p className="font-body text-slate-500 text-xs font-semibold uppercase tracking-wider mb-2">Pending</p>
-            <p className="font-heading text-2xl sm:text-3xl font-bold text-yellow-600">{stats.pending}</p>
-          </div>
-          <div className="bg-white border-2 border-red-200 rounded-xl p-4 sm:p-5 shadow-sm">
-            <p className="font-body text-slate-500 text-xs font-semibold uppercase tracking-wider mb-2">Cancelled</p>
-            <p className="font-heading text-2xl sm:text-3xl font-bold text-red-600">{stats.cancelled}</p>
-          </div>
-          <div className="bg-gradient-to-br from-brand-red to-red-700 rounded-xl p-4 sm:p-5 shadow-lg col-span-2 md:col-span-1">
-            <p className="font-body text-white/90 text-xs font-semibold uppercase tracking-wider mb-2">Revenue</p>
-            <p className="font-heading text-2xl sm:text-3xl font-bold text-white">LKR {stats.revenue.toLocaleString()}</p>
-          </div>
-        </div>
-
-        {/* Size Breakdown */}
-        <div className="bg-white border border-slate-200 rounded-2xl p-5 sm:p-6 shadow-sm mb-8">
-          <div className="mb-4">
-            <h2 className="font-heading text-xl sm:text-2xl font-bold text-brand-black mb-1">Size Breakdown</h2>
-            <p className="font-body text-sm text-slate-600">Orders and total quantities per size</p>
-          </div>
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3 sm:gap-4">
-            {sizeStats.map((stat) => (
-              <div key={stat.size} className="bg-slate-50 rounded-xl p-4 border border-slate-200 hover:border-brand-red transition-colors">
-                <div className="text-center">
-                  <div className="inline-flex items-center justify-center w-12 h-12 bg-brand-red rounded-lg mb-3">
-                    <span className="font-heading text-xl font-bold text-white">{stat.size}</span>
-                  </div>
-                  <div className="space-y-1">
-                    <div>
-                      <p className="font-body text-xs text-slate-500 uppercase tracking-wider">Orders</p>
-                      <p className="font-heading text-2xl font-bold text-brand-black">{stat.orders}</p>
-                    </div>
-                    <div className="pt-2 border-t border-slate-200">
-                      <p className="font-body text-xs text-slate-500 uppercase tracking-wider">Total Qty</p>
-                      <p className="font-heading text-xl font-bold text-brand-red">{stat.quantity}</p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        {/* Controls */}
-        <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 mb-6">
-          <div className="flex-1 flex flex-col sm:flex-row gap-3">
-            {/* Search Input */}
-            <div className="relative flex-1">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
-              <input
-                type="text"
-                placeholder="Search by name, order ID, or phone..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full bg-white border border-slate-300 rounded-lg pl-10 pr-4 py-2.5 text-brand-black font-body placeholder:text-slate-400 focus:outline-none focus:border-brand-red focus:ring-2 focus:ring-brand-red/20 transition-all"
-              />
+    <main className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-50 py-6 sm:py-8 px-4">
+      <div className="max-w-7xl mx-auto space-y-8">
+        
+        {/* Header Section */}
+        <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6 bg-white rounded-3xl p-6 sm:p-8 shadow-lg border border-slate-200">
+          <div className="space-y-2">
+            <h1 className="font-heading text-3xl sm:text-4xl md:text-5xl font-bold text-brand-black">
+              Order Dashboard
+            </h1>
+            <p className="font-body text-lg text-slate-600">
+              Real-time overview of pre-order performance and analytics
+            </p>
+            <div className="flex items-center gap-2 text-sm text-slate-500">
+              <Calendar size={16} />
+              <span>Last updated: {new Date().toLocaleString()}</span>
             </div>
-            
-            {/* Status Filter */}
-            <select
-              id="payment-status-filter"
-              aria-label="Filter orders by payment status"
-              value={filter}
-              onChange={(e) => setFilter(e.target.value as PaymentStatus | 'ALL')}
-              className="w-full sm:w-auto bg-white border border-slate-300 rounded-lg px-4 py-2.5 text-brand-black font-body focus:outline-none focus:border-brand-red focus:ring-2 focus:ring-brand-red/20 transition-all"
-            >
-              <option value="ALL">All Status</option>
-              <option value="PAID">Paid</option>
-              <option value="PENDING_PAYMENT">Pending Payment</option>
-              <option value="CANCELLED">Cancelled</option>
-            </select>
           </div>
-
-          <div className="flex gap-2 sm:gap-3">
+          
+          <div className="flex items-center gap-3">
             <button
               onClick={fetchOrders}
               disabled={loading}
-              className="flex-1 sm:flex-none bg-white border border-slate-300 rounded-lg px-5 py-2.5 font-semibold text-brand-black hover:border-brand-red hover:text-brand-red transition-all disabled:opacity-50 disabled:cursor-not-allowed touch-manipulation active:scale-95"
+              className="bg-white border-2 border-slate-200 text-brand-black px-5 py-2.5 font-semibold rounded-xl hover:border-brand-red hover:text-brand-red transition-all flex items-center gap-2 disabled:opacity-50"
             >
-              {loading ? <Loader2 className="animate-spin mx-auto" size={20} /> : 'Refresh'}
+              <RefreshCw size={16} className={loading ? 'animate-spin' : ''} />
+              Refresh
             </button>
             <button
-              onClick={exportToCSV}
-              className="flex-1 sm:flex-none bg-brand-black text-white px-5 py-2.5 font-semibold rounded-lg hover:bg-slate-800 transition-all flex items-center justify-center gap-2 touch-manipulation active:scale-95"
+              onClick={() => {
+                setIsAuthenticated(false);
+                setPassword('');
+              }}
+              className="bg-gradient-to-r from-red-500 to-red-600 text-white px-5 py-2.5 font-semibold rounded-xl hover:from-red-600 hover:to-red-700 transition-all flex items-center gap-2 shadow-lg"
             >
-              <Download size={16} />
-              <span className="hidden sm:inline">Export</span> CSV
+              <LogOut size={16} />
+              Logout
             </button>
+          </div>
+        </div>
+
+        {/* KPI Cards */}
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
+          <div className="bg-white rounded-2xl p-6 shadow-lg border border-slate-200 hover:shadow-xl transition-all duration-300 hover:border-brand-red/20">
+            <div className="flex items-center justify-between mb-4">
+              <div className="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center">
+                <Package size={24} className="text-blue-600" strokeWidth={2} />
+              </div>
+              <div className="text-right">
+                <p className="font-heading text-3xl font-bold text-brand-black">{stats.total}</p>
+                <p className="font-body text-xs text-slate-500 uppercase tracking-wider">Total Orders</p>
+              </div>
+            </div>
+            <div className="h-2 bg-slate-100 rounded-full overflow-hidden">
+              <div 
+                className="h-full bg-blue-500 rounded-full transition-all duration-500" 
+                style={{width: `${stats.total > 0 ? 100 : 0}%`}}
+              />
+            </div>
+          </div>
+
+          <div className="bg-white rounded-2xl p-6 shadow-lg border border-slate-200 hover:shadow-xl transition-all duration-300 hover:border-green-200">
+            <div className="flex items-center justify-between mb-4">
+              <div className="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center">
+                <CreditCard size={24} className="text-green-600" strokeWidth={2} />
+              </div>
+              <div className="text-right">
+                <p className="font-heading text-3xl font-bold text-green-600">{stats.paid}</p>
+                <p className="font-body text-xs text-slate-500 uppercase tracking-wider">Paid Orders</p>
+              </div>
+            </div>
+            <div className="h-2 bg-slate-100 rounded-full overflow-hidden">
+              <div 
+                className="h-full bg-green-500 rounded-full transition-all duration-500" 
+                style={{width: `${stats.total > 0 ? (stats.paid / stats.total) * 100 : 0}%`}}
+              />
+            </div>
+          </div>
+
+          <div className="bg-white rounded-2xl p-6 shadow-lg border border-slate-200 hover:shadow-xl transition-all duration-300 hover:border-yellow-200">
+            <div className="flex items-center justify-between mb-4">
+              <div className="w-12 h-12 bg-yellow-100 rounded-xl flex items-center justify-center">
+                <Users size={24} className="text-yellow-600" strokeWidth={2} />
+              </div>
+              <div className="text-right">
+                <p className="font-heading text-3xl font-bold text-yellow-600">{stats.pending}</p>
+                <p className="font-body text-xs text-slate-500 uppercase tracking-wider">Pending</p>
+              </div>
+            </div>
+            <div className="h-2 bg-slate-100 rounded-full overflow-hidden">
+              <div 
+                className="h-full bg-yellow-500 rounded-full transition-all duration-500" 
+                style={{width: `${stats.total > 0 ? (stats.pending / stats.total) * 100 : 0}%`}}
+              />
+            </div>
+          </div>
+
+          <div className="bg-gradient-to-br from-brand-red to-red-700 rounded-2xl p-6 shadow-brand-lg text-white hover:shadow-2xl transition-all duration-300">
+            <div className="flex items-center justify-between mb-4">
+              <div className="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center">
+                <TrendingUp size={24} className="text-white" strokeWidth={2} />
+              </div>
+              <div className="text-right">
+                <p className="font-heading text-2xl sm:text-3xl font-bold">LKR {stats.revenue.toLocaleString()}</p>
+                <p className="font-body text-xs text-white/80 uppercase tracking-wider">Total Revenue</p>
+              </div>
+            </div>
+            <div className="flex items-center text-sm text-white/90">
+              <span>From {stats.paid} paid orders</span>
+            </div>
+          </div>
+        </div>
+
+        {/* Analytics Section */}
+        <div className="grid lg:grid-cols-3 gap-6">
+          {/* Size Distribution */}
+          <div className="lg:col-span-2 bg-white rounded-3xl p-6 sm:p-8 shadow-lg border border-slate-200">
+            <div className="flex items-center justify-between mb-6">
+              <div>
+                <h2 className="font-heading text-2xl font-bold text-brand-black mb-1">Size Distribution</h2>
+                <p className="font-body text-sm text-slate-600">Order breakdown by T-shirt sizes</p>
+              </div>
+              <div className="w-12 h-12 bg-brand-red/10 rounded-xl flex items-center justify-center">
+                <Package size={24} className="text-brand-red" strokeWidth={2} />
+              </div>
+            </div>
+            
+            <div className="grid grid-cols-2 sm:grid-cols-5 gap-4">
+              {sizeStats.map((stat, index) => (
+                <div key={stat.size} className="bg-slate-50 rounded-2xl p-5 border border-slate-100 hover:border-brand-red hover:bg-brand-red/5 transition-all duration-300 group">
+                  <div className="text-center">
+                    <div className="inline-flex items-center justify-center w-14 h-14 bg-gradient-to-br from-brand-red to-red-700 rounded-2xl mb-4 shadow-lg group-hover:scale-105 transition-transform">
+                      <span className="font-heading text-xl font-bold text-white">{stat.size}</span>
+                    </div>
+                    <div className="space-y-3">
+                      <div>
+                        <p className="font-body text-xs text-slate-500 uppercase tracking-wider mb-1">Orders</p>
+                        <p className="font-heading text-2xl font-bold text-brand-black">{stat.orders}</p>
+                      </div>
+                      <div className="pt-3 border-t border-slate-200">
+                        <p className="font-body text-xs text-slate-500 uppercase tracking-wider mb-1">Quantity</p>
+                        <p className="font-heading text-xl font-bold text-brand-red">{stat.quantity}</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+            
+            <div className="mt-6 pt-6 border-t border-slate-200">
+              <div className="flex items-center justify-between text-sm">
+                <span className="font-body text-slate-500">Most Popular Size:</span>
+                <span className="font-heading font-bold text-brand-red">
+                  {sizeStats.reduce((prev, current) => (prev.quantity > current.quantity) ? prev : current).size}
+                </span>
+              </div>
+            </div>
+          </div>
+
+          {/* Quick Stats */}
+          <div className="space-y-4">
+            <div className="bg-white rounded-2xl p-6 shadow-lg border border-slate-200">
+              <div className="text-center">
+                <div className="w-14 h-14 bg-purple-100 rounded-xl flex items-center justify-center mx-auto mb-4">
+                  <Eye size={24} className="text-purple-600" strokeWidth={2} />
+                </div>
+                <h3 className="font-heading text-lg font-bold text-brand-black mb-2">Conversion Rate</h3>
+                <p className="font-heading text-3xl font-bold text-purple-600">
+                  {stats.total > 0 ? Math.round((stats.paid / stats.total) * 100) : 0}%
+                </p>
+                <p className="font-body text-xs text-slate-500 mt-1">Paid vs Total Orders</p>
+              </div>
+            </div>
+
+            <div className="bg-gradient-to-br from-green-500 to-green-600 rounded-2xl p-6 shadow-lg text-white">
+              <div className="text-center">
+                <div className="w-14 h-14 bg-white/20 rounded-xl flex items-center justify-center mx-auto mb-4">
+                  <TrendingUp size={24} className="text-white" strokeWidth={2} />
+                </div>
+                <h3 className="font-heading text-lg font-bold mb-2">Avg Order Value</h3>
+                <p className="font-heading text-2xl font-bold">
+                  LKR {stats.paid > 0 ? Math.round(stats.revenue / stats.paid).toLocaleString() : 0}
+                </p>
+                <p className="font-body text-xs text-white/80 mt-1">Per paid order</p>
+              </div>
+            </div>
+
+            <div className="bg-white rounded-2xl p-6 shadow-lg border border-slate-200">
+              <div className="text-center">
+                <div className="w-14 h-14 bg-orange-100 rounded-xl flex items-center justify-center mx-auto mb-4">
+                  <Package size={24} className="text-orange-600" strokeWidth={2} />
+                </div>
+                <h3 className="font-heading text-lg font-bold text-brand-black mb-2">Total Units</h3>
+                <p className="font-heading text-3xl font-bold text-orange-600">
+                  {orders.reduce((sum, order) => sum + order.quantity, 0)}
+                </p>
+                <p className="font-body text-xs text-slate-500 mt-1">T-shirts ordered</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Controls and Filters */}
+        <div className="bg-white rounded-3xl p-6 sm:p-8 shadow-lg border border-slate-200">
+          <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
+            
+            {/* Search and Filter */}
+            <div className="flex flex-col sm:flex-row gap-4 flex-1">
+              <div className="relative flex-1 max-w-md">
+                <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" size={20} strokeWidth={2} />
+                <input
+                  type="text"
+                  placeholder="Search orders by name, ID, or phone..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="w-full bg-slate-50 border-transparent rounded-xl pl-12 pr-4 py-3.5 text-brand-black font-body placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-brand-red focus:bg-white transition-all duration-300"
+                />
+              </div>
+              
+              <div className="relative">
+                <Filter className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" size={18} strokeWidth={2} />
+                <select
+                  value={filter}
+                  onChange={(e) => setFilter(e.target.value as PaymentStatus | 'ALL')}
+                  className="appearance-none bg-slate-50 border-transparent rounded-xl pl-12 pr-10 py-3.5 text-brand-black font-body focus:outline-none focus:ring-2 focus:ring-brand-red focus:bg-white transition-all duration-300 cursor-pointer"
+                >
+                  <option value="ALL">All Status</option>
+                  <option value="PAID">✅ Paid</option>
+                  <option value="PENDING_PAYMENT">⏳ Pending</option>
+                  <option value="CANCELLED">❌ Cancelled</option>
+                </select>
+              </div>
+            </div>
+
+            {/* Action Buttons */}
+            <div className="flex gap-3">
+              <button
+                onClick={exportToCSV}
+                className="bg-gradient-to-r from-brand-red to-red-700 text-white px-6 py-3.5 font-heading font-bold rounded-xl hover:from-red-700 hover:to-red-800 transition-all flex items-center gap-2 shadow-lg hover:shadow-xl active:scale-95"
+              >
+                <Download size={18} strokeWidth={2} />
+                <span className="hidden sm:inline">Export</span> CSV
+              </button>
+            </div>
+          </div>
+
+          {/* Results Summary */}
+          <div className="mt-6 pt-6 border-t border-slate-200 flex items-center justify-between text-sm">
+            <div className="font-body text-slate-600">
+              Showing <span className="font-semibold text-brand-black">{filteredOrders.length}</span> of{' '}
+              <span className="font-semibold text-brand-black">{orders.length}</span> orders
+              {searchQuery && <span className="text-brand-red"> (filtered by "{searchQuery}")</span>}
+            </div>
+            <div className="flex items-center gap-2 text-slate-500">
+              <RefreshCw size={16} />
+              <span>Auto-refresh: Off</span>
+            </div>
           </div>
         </div>
 
         {/* Orders Table */}
-        <div className="bg-white border border-slate-200 rounded-2xl shadow-lg overflow-hidden">
+        <div className="bg-white rounded-3xl shadow-lg border border-slate-200 overflow-hidden">
           {loading ? (
-            <div className="flex items-center justify-center py-12 sm:py-16">
-              <Loader2 className="animate-spin text-brand-red" size={40} />
+            <div className="flex flex-col items-center justify-center py-16">
+              <div className="w-16 h-16 bg-brand-red/10 rounded-2xl flex items-center justify-center mb-4">
+                <Loader2 className="animate-spin text-brand-red" size={32} strokeWidth={2} />
+              </div>
+              <p className="font-heading text-lg font-medium text-brand-black mb-2">Loading orders...</p>
+              <p className="font-body text-sm text-slate-500">Fetching the latest data</p>
             </div>
           ) : error ? (
-            <div className="p-8 text-center">
-              <div className="text-red-600 font-semibold mb-1">{error}</div>
-              <button onClick={fetchOrders} className="text-brand-red text-sm hover:underline">Try again</button>
+            <div className="flex flex-col items-center justify-center py-16">
+              <div className="w-16 h-16 bg-red-100 rounded-2xl flex items-center justify-center mb-4">
+                <Package size={32} className="text-red-600" strokeWidth={2} />
+              </div>
+              <p className="font-heading text-lg font-medium text-red-600 mb-2">Error loading orders</p>
+              <p className="font-body text-sm text-slate-500 mb-4 text-center max-w-sm">{error}</p>
+              <button 
+                onClick={fetchOrders} 
+                className="bg-brand-red text-white px-6 py-2.5 rounded-xl font-semibold hover:bg-red-700 transition-colors"
+              >
+                Try Again
+              </button>
             </div>
           ) : filteredOrders.length === 0 ? (
-            <div className="p-12 text-center">
-              <p className="text-slate-500 font-body">No orders found</p>
-              <button onClick={fetchOrders} className="mt-2 text-brand-red text-sm hover:underline">Refresh</button>
+            <div className="flex flex-col items-center justify-center py-16">
+              <div className="w-16 h-16 bg-slate-100 rounded-2xl flex items-center justify-center mb-4">
+                <Search size={32} className="text-slate-400" strokeWidth={2} />
+              </div>
+              <p className="font-heading text-lg font-medium text-slate-600 mb-2">No orders found</p>
+              <p className="font-body text-sm text-slate-500 mb-4">
+                {searchQuery ? `No results for "${searchQuery}"` : 'No orders match the current filters'}
+              </p>
+              <div className="flex gap-3">
+                {searchQuery && (
+                  <button 
+                    onClick={() => setSearchQuery('')}
+                    className="bg-slate-100 text-slate-600 px-4 py-2 rounded-lg font-medium hover:bg-slate-200 transition-colors"
+                  >
+                    Clear Search
+                  </button>
+                )}
+                <button 
+                  onClick={fetchOrders} 
+                  className="bg-brand-red text-white px-4 py-2 rounded-lg font-medium hover:bg-red-700 transition-colors"
+                >
+                  Refresh Data
+                </button>
+              </div>
             </div>
           ) : (
-            <div className="overflow-x-auto">
-              <table className="w-full text-left text-sm">
-                <thead className="bg-slate-50 border-b-2 border-slate-200">
-                  <tr>
-                    <th className="py-3 sm:py-4 px-3 sm:px-4 font-body text-xs font-bold text-slate-700 uppercase tracking-wider">Order ID</th>
-                    <th className="py-3 sm:py-4 px-3 sm:px-4 font-body text-xs font-bold text-slate-700 uppercase tracking-wider">Name</th>
-                    <th className="py-3 sm:py-4 px-3 sm:px-4 font-body text-xs font-bold text-slate-700 uppercase tracking-wider">Phone</th>
-                    <th className="py-3 sm:py-4 px-3 sm:px-4 font-body text-xs font-bold text-slate-700 uppercase tracking-wider">Size</th>
-                    <th className="py-3 sm:py-4 px-3 sm:px-4 font-body text-xs font-bold text-slate-700 uppercase tracking-wider">Qty</th>
-                    <th className="py-3 sm:py-4 px-3 sm:px-4 font-body text-xs font-bold text-slate-700 uppercase tracking-wider">Amount</th>
-                    <th className="py-3 sm:py-4 px-3 sm:px-4 font-body text-xs font-bold text-slate-700 uppercase tracking-wider">Status</th>
-                    <th className="py-3 sm:py-4 px-3 sm:px-4 font-body text-xs font-bold text-slate-700 uppercase tracking-wider">Date</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-slate-100">
-                  {filteredOrders.map((order) => (
-                    <tr key={order.orderId} className="hover:bg-slate-50 transition-colors">
-                      <td className="py-3 sm:py-4 px-3 sm:px-4">
-                        <code className="text-xs bg-slate-100 px-2 py-1 rounded text-slate-700">{order.orderId.slice(0, 8)}</code>
-                      </td>
-                      <td className="py-3 sm:py-4 px-3 sm:px-4 font-body text-brand-black font-medium">{order.name}</td>
-                      <td className="py-3 sm:py-4 px-3 sm:px-4 font-body text-slate-600">{order.phone}</td>
-                      <td className="py-3 sm:py-4 px-3 sm:px-4">
-                        <span className="font-heading font-bold text-brand-red">{order.size}</span>
-                      </td>
-                      <td className="py-3 sm:py-4 px-3 sm:px-4 font-body text-slate-700 font-semibold">{order.quantity}</td>
-                      <td className="py-3 sm:py-4 px-3 sm:px-4 font-body text-brand-black font-semibold">LKR {order.amount.toLocaleString()}</td>
-                      <td className="py-3 sm:py-4 px-3 sm:px-4">
-                        <span
-                          className={`inline-block px-2.5 py-1 text-xs font-semibold rounded-full ${
-                            order.paymentStatus === 'PAID'
-                              ? 'bg-green-100 text-green-700'
-                              : order.paymentStatus === 'PENDING_PAYMENT'
-                              ? 'bg-yellow-100 text-yellow-700'
-                              : 'bg-red-100 text-red-700'
-                          }`}
-                        >
-                          {order.paymentStatus === 'PAID' ? 'Paid' : order.paymentStatus === 'PENDING_PAYMENT' ? 'Pending' : 'Cancelled'}
-                        </span>
-                      </td>
-                      <td className="py-3 sm:py-4 px-3 sm:px-4 font-body text-slate-500 text-xs" suppressHydrationWarning>
-                        {new Date(order.createdAt).toLocaleDateString()}
-                      </td>
+            <>
+              <div className="overflow-x-auto">
+                <table className="w-full">
+                  <thead className="bg-slate-50 border-b-2 border-slate-100">
+                    <tr>
+                      <th className="py-4 px-6 text-left">
+                        <span className="font-body text-xs font-bold text-slate-600 uppercase tracking-wider">Order ID</span>
+                      </th>
+                      <th className="py-4 px-6 text-left">
+                        <span className="font-body text-xs font-bold text-slate-600 uppercase tracking-wider">Customer</span>
+                      </th>
+                      <th className="py-4 px-6 text-left">
+                        <span className="font-body text-xs font-bold text-slate-600 uppercase tracking-wider">Contact</span>
+                      </th>
+                      <th className="py-4 px-6 text-center">
+                        <span className="font-body text-xs font-bold text-slate-600 uppercase tracking-wider">Size</span>
+                      </th>
+                      <th className="py-4 px-6 text-center">
+                        <span className="font-body text-xs font-bold text-slate-600 uppercase tracking-wider">Quantity</span>
+                      </th>
+                      <th className="py-4 px-6 text-right">
+                        <span className="font-body text-xs font-bold text-slate-600 uppercase tracking-wider">Amount</span>
+                      </th>
+                      <th className="py-4 px-6 text-center">
+                        <span className="font-body text-xs font-bold text-slate-600 uppercase tracking-wider">Status</span>
+                      </th>
+                      <th className="py-4 px-6 text-right">
+                        <span className="font-body text-xs font-bold text-slate-600 uppercase tracking-wider">Date</span>
+                      </th>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
+                  </thead>
+                  <tbody className="divide-y divide-slate-100">
+                    {filteredOrders.map((order, index) => (
+                      <tr key={order.orderId} className="hover:bg-slate-50/50 transition-colors group">
+                        <td className="py-4 px-6">
+                          <div className="flex items-center">
+                            <div className="w-2 h-2 bg-brand-red rounded-full mr-3 opacity-60"></div>
+                            <code className="text-xs bg-slate-100 group-hover:bg-slate-200 px-3 py-1.5 rounded-lg text-slate-700 font-mono transition-colors">
+                              {order.orderId.slice(0, 8)}
+                            </code>
+                          </div>
+                        </td>
+                        <td className="py-4 px-6">
+                          <div>
+                            <p className="font-body font-semibold text-brand-black">{order.name}</p>
+                          </div>
+                        </td>
+                        <td className="py-4 px-6">
+                          <p className="font-body text-slate-600">{order.phone}</p>
+                        </td>
+                        <td className="py-4 px-6 text-center">
+                          <span className="inline-flex items-center justify-center w-8 h-8 bg-gradient-to-br from-brand-red to-red-700 text-white font-heading font-bold text-sm rounded-lg shadow-sm">
+                            {order.size}
+                          </span>
+                        </td>
+                        <td className="py-4 px-6 text-center">
+                          <span className="inline-flex items-center justify-center w-8 h-8 bg-slate-100 group-hover:bg-slate-200 text-slate-700 font-heading font-bold text-sm rounded-lg transition-colors">
+                            {order.quantity}
+                          </span>
+                        </td>
+                        <td className="py-4 px-6 text-right">
+                          <p className="font-body font-bold text-brand-black">
+                            LKR {order.amount.toLocaleString()}
+                          </p>
+                        </td>
+                        <td className="py-4 px-6 text-center">
+                          <span
+                            className={`inline-flex items-center px-3 py-1.5 text-xs font-semibold rounded-full border ${
+                              order.paymentStatus === 'PAID'
+                                ? 'bg-green-50 text-green-700 border-green-200'
+                                : order.paymentStatus === 'PENDING_PAYMENT'
+                                ? 'bg-yellow-50 text-yellow-700 border-yellow-200'
+                                : 'bg-red-50 text-red-700 border-red-200'
+                            }`}
+                          >
+                            {order.paymentStatus === 'PAID' ? '✅ Paid' : order.paymentStatus === 'PENDING_PAYMENT' ? '⏳ Pending' : '❌ Cancelled'}
+                          </span>
+                        </td>
+                        <td className="py-4 px-6 text-right">
+                          <p className="font-body text-sm text-slate-500" suppressHydrationWarning>
+                            {new Date(order.createdAt).toLocaleDateString('en-US', {
+                              month: 'short',
+                              day: 'numeric',
+                              year: 'numeric'
+                            })}
+                          </p>
+                          <p className="font-body text-xs text-slate-400" suppressHydrationWarning>
+                            {new Date(order.createdAt).toLocaleTimeString('en-US', {
+                              hour: '2-digit',
+                              minute: '2-digit'
+                            })}
+                          </p>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+              
+              {/* Table Footer */}
+              <div className="bg-slate-50 px-6 py-4 border-t border-slate-100">
+                <div className="flex items-center justify-between text-sm">
+                  <div className="font-body text-slate-600">
+                    <span className="font-semibold text-brand-black">{filteredOrders.length}</span> orders displayed
+                  </div>
+                  <div className="flex items-center gap-4">
+                    <div className="flex items-center gap-2">
+                      <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                      <span className="text-slate-600">Paid: {filteredOrders.filter(o => o.paymentStatus === 'PAID').length}</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <div className="w-2 h-2 bg-yellow-500 rounded-full"></div>
+                      <span className="text-slate-600">Pending: {filteredOrders.filter(o => o.paymentStatus === 'PENDING_PAYMENT').length}</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </>
           )}
         </div>
       </div>

@@ -35,7 +35,7 @@ export async function sendOrderConfirmationSMS(
   try {
     console.log(`Sending SMS to ${formattedPhone} for order ${orderId}`);
 
-    // Text.lk uses URL-encoded form data
+    // Text.lk API - using HTTP endpoint for better compatibility
     const params = new URLSearchParams({
       session_id: apiKey,
       to: formattedPhone,
@@ -43,7 +43,11 @@ export async function sendOrderConfirmationSMS(
       from: senderId,
     });
 
-    const response = await fetch('https://www.text.lk/api/v3/sms/send', {
+    // Use HTTP endpoint for Text.lk API
+    const apiBase = process.env.TEXTLK_API_BASE || 'https://app.text.lk/api/http';
+    const endpoint = `${apiBase.replace(/\/+$/,'')}/send_sms.php`;
+
+    const response = await fetch(endpoint, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded',
@@ -51,22 +55,24 @@ export async function sendOrderConfirmationSMS(
       body: params.toString(),
     });
 
-    const data = await response.json();
-
-    // Text.lk returns {status: "success"} on success
-    if (response.ok && data.status === 'success') {
-      console.log(`SMS sent successfully to ${formattedPhone}`);
+    const responseText = await response.text();
+    
+    // Text.lk HTTP API returns plain text response
+    // Success: "1" or success message
+    // Error: "0" or error message
+    if (response.ok && (responseText.trim() === '1' || responseText.includes('success'))) {
+      console.log(`SMS sent successfully to ${formattedPhone}`, { response: responseText });
       return {
         success: true,
         message: 'SMS sent successfully',
-        details: data,
+        details: { response: responseText },
       };
     } else {
-      console.error('SMS sending failed:', data);
+      console.error('SMS sending failed:', responseText);
       return {
         success: false,
-        message: `SMS failed: ${data.message || data.error || 'Unknown error'}`,
-        details: data,
+        message: `SMS failed: ${responseText}`,
+        details: { response: responseText },
       };
     }
   } catch (error) {
@@ -139,7 +145,11 @@ export async function sendDeliveryUpdateSMS(
       from: senderId,
     });
 
-    const response = await fetch('https://www.text.lk/api/v3/sms/send', {
+    // Use HTTP endpoint for Text.lk API
+    const apiBase = process.env.TEXTLK_API_BASE || 'https://app.text.lk/api/http';
+    const endpoint = `${apiBase.replace(/\/+$/,'')}/send_sms.php`;
+
+    const response = await fetch(endpoint, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded',
@@ -147,14 +157,14 @@ export async function sendDeliveryUpdateSMS(
       body: params.toString(),
     });
 
-    const data = await response.json();
+    const responseText = await response.text();
 
-    if (response.ok && data.status === 'success') {
-      console.log(`Delivery update SMS sent to ${formattedPhone}`);
-      return { success: true, message: 'SMS sent', details: data };
+    if (response.ok && (responseText.trim() === '1' || responseText.includes('success'))) {
+      console.log(`Delivery update SMS sent to ${formattedPhone}`, { response: responseText });
+      return { success: true, message: 'SMS sent', details: { response: responseText } };
     } else {
-      console.error('Delivery SMS failed:', data);
-      return { success: false, message: 'SMS failed', details: data };
+      console.error('Delivery SMS failed:', responseText);
+      return { success: false, message: 'SMS failed', details: { response: responseText } };
     }
   } catch (error) {
     console.error('Error sending delivery SMS:', error);
