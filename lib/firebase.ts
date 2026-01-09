@@ -10,17 +10,20 @@ const firebaseConfig = {
   appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
 };
 
-console.log('Firebase config check:', {
+// During build time, allow missing environment variables
+const isBuildTime = process.env.NEXT_PHASE === 'phase-production-build';
+const isServerSide = typeof window === 'undefined';
+
+console.log('Firebase initialization attempt:', {
   hasApiKey: !!firebaseConfig.apiKey,
   hasAuthDomain: !!firebaseConfig.authDomain,
   hasProjectId: !!firebaseConfig.projectId,
   projectId: firebaseConfig.projectId,
   environment: process.env.NODE_ENV,
-  buildTime: process.env.NEXT_PHASE === 'phase-production-build'
+  isBuildTime,
+  isServerSide,
+  vercelEnv: process.env.VERCEL_ENV
 });
-
-// During build time, allow missing environment variables
-const isBuildTime = process.env.NEXT_PHASE === 'phase-production-build' || process.env.NODE_ENV === 'production' && !process.env.VERCEL_URL;
 
 // Validate required Firebase environment variables
 const requiredEnvVars = [
@@ -33,28 +36,25 @@ const requiredEnvVars = [
 ];
 
 const missingVars = requiredEnvVars.filter(varName => !process.env[varName]);
-if (missingVars.length > 0) {
-  const errorMsg = `Missing required Firebase environment variables: ${missingVars.join(', ')}`;
-  console.error(errorMsg);
-  
-  // Only throw during runtime, not during build
-  if (!isBuildTime) {
-    throw new Error(errorMsg);
-  } else {
-    console.warn('Build time: Firebase environment variables missing, using dummy config');
-  }
-}
 
-// Initialize Firebase
+// Initialize Firebase with proper error handling
 let app: FirebaseApp | null = null;
 let db: Firestore | null = null;
+let initError: Error | null = null;
 
 try {
-  // During build time with missing env vars, create a dummy app
-  if (isBuildTime && missingVars.length > 0) {
-    console.log('Build time: Skipping Firebase initialization due to missing env vars');
-    // Export null values for build time
+  if (missingVars.length > 0) {
+    const errorMsg = `Missing Firebase environment variables: ${missingVars.join(', ')}`;
+    console.error(errorMsg);
+    
+    if (!isBuildTime) {
+      initError = new Error(errorMsg);
+      console.warn('Firebase not initialized due to missing environment variables');
+    } else {
+      console.log('Build time: Skipping Firebase initialization due to missing env vars');
+    }
   } else {
+    // All environment variables are present, try to initialize
     if (!getApps().length) {
       console.log('Initializing Firebase app...');
       app = initializeApp(firebaseConfig);
@@ -68,9 +68,22 @@ try {
   }
 } catch (error) {
   console.error('Firebase initialization error:', error);
-  if (!isBuildTime) {
-    throw error;
+  initError = error instanceof Error ? error : new Error('Firebase initialization failed');
+  
+  // Don't throw during build time or module loading
+  if (!isBuildTime && isServerSide) {
+    console.error('Firebase initialization failed, but continuing...');
   }
 }
 
+// Export with error checking function
 export { app, db };
+
+export function getFirebaseStatus() {
+  return {
+    isInitialized: !!db,
+    hasError: !!initError,
+    error: initError?.message,
+    missingEnvVars: missingVars
+  };
+}

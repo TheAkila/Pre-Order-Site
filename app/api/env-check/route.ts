@@ -1,7 +1,10 @@
 import { NextResponse } from 'next/server';
+import { getFirebaseStatus } from '@/lib/firebase';
 
 export async function GET() {
   console.log('Environment check API called');
+  
+  const firebaseStatus = getFirebaseStatus();
   
   const envCheck = {
     message: 'Environment variables check',
@@ -17,6 +20,7 @@ export async function GET() {
       storageBucket: process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET ? 'Present' : 'Missing',
       messagingSenderId: process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID ? 'Present' : 'Missing',
       appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID ? 'Present' : 'Missing',
+      status: firebaseStatus
     },
     payhere: {
       merchantId: process.env.NEXT_PUBLIC_PAYHERE_MERCHANT_ID ? 'Present' : 'Missing',

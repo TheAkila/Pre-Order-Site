@@ -1,33 +1,27 @@
 import { NextResponse } from 'next/server';
 import { collection, getDocs, query, limit } from 'firebase/firestore';
-import { db } from '@/lib/firebase';
+import { db, getFirebaseStatus } from '@/lib/firebase';
 
 export async function GET() {
   console.log('Orders test API called at:', new Date().toISOString());
   
   try {
-    // First test - simple connection
-    console.log('Testing Firebase connection...');
-    if (!db) {
+    // First test - Firebase status check
+    const firebaseStatus = getFirebaseStatus();
+    console.log('Firebase status check:', firebaseStatus);
+    
+    if (!firebaseStatus.isInitialized || !db) {
       return NextResponse.json({
         success: false,
-        error: 'Firebase db is null or undefined - Firebase not configured',
-        timestamp: new Date().toISOString(),
-        buildTime: process.env.NEXT_PHASE === 'phase-production-build'
+        error: 'Firebase not properly initialized',
+        details: firebaseStatus.error || 'Database connection unavailable',
+        missingEnvVars: firebaseStatus.missingEnvVars,
+        timestamp: new Date().toISOString()
       }, { status: 500 });
     }
 
     // Second test - try to get collection reference
     console.log('Getting orders collection reference...');
-    if (!db) {
-      console.error('Firebase db became null before collection reference');
-      return NextResponse.json({
-        success: false,
-        error: 'Firebase db became null',
-        timestamp: new Date().toISOString()
-      }, { status: 500 });
-    }
-    
     const ordersRef = collection(db, 'orders');
     console.log('Orders collection reference created successfully');
 

@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { collection, addDoc, getDocs, query, orderBy, Timestamp } from 'firebase/firestore';
-import { db } from '@/lib/firebase';
+import { db, getFirebaseStatus } from '@/lib/firebase';
 import { Order, OrderFormData } from '@/types/order';
 
 // GET /api/orders - Fetch all orders
@@ -8,23 +8,21 @@ export async function GET() {
   console.log('Orders API called at:', new Date().toISOString());
   
   try {
-    // Check if Firebase is properly configured
-    if (!db) {
-      console.error('Firebase db is not initialized');
-      return NextResponse.json(
-        { error: 'Database connection failed - Firebase not configured' },
-        { status: 500 }
-      );
+    // Check Firebase status first
+    const firebaseStatus = getFirebaseStatus();
+    console.log('Firebase status:', firebaseStatus);
+    
+    if (!firebaseStatus.isInitialized || !db) {
+      console.error('Firebase is not properly initialized');
+      return NextResponse.json({
+        error: 'Database connection failed',
+        details: firebaseStatus.error || 'Firebase not initialized',
+        missingEnvVars: firebaseStatus.missingEnvVars,
+        timestamp: new Date().toISOString()
+      }, { status: 500 });
     }
 
     console.log('Firebase db initialized, fetching orders...');
-    if (!db) {
-      console.error('Firebase db became null after initialization check');
-      return NextResponse.json(
-        { error: 'Database connection lost' },
-        { status: 500 }
-      );
-    }
     
     const ordersRef = collection(db, 'orders');
     const q = query(ordersRef, orderBy('createdAt', 'desc'));
@@ -96,12 +94,13 @@ export async function POST(request: NextRequest) {
     const amount = productPrice * body.quantity;
 
     // Create order in Firebase
-    if (!db) {
+    const firebaseStatus = getFirebaseStatus();
+    if (!firebaseStatus.isInitialized || !db) {
       console.error('Firebase db is not initialized for POST');
-      return NextResponse.json(
-        { error: 'Database connection failed' },
-        { status: 500 }
-      );
+      return NextResponse.json({
+        error: 'Database connection failed',
+        details: firebaseStatus.error || 'Firebase not initialized'
+      }, { status: 500 });
     }
     
     const ordersRef = collection(db, 'orders');

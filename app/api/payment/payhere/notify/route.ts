@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { doc, updateDoc, Timestamp, getDoc } from 'firebase/firestore';
-import { db } from '@/lib/firebase';
+import { db, getFirebaseStatus } from '@/lib/firebase';
 import crypto from 'crypto';
 import { sendOrderConfirmationSMS } from '@/lib/sms';
 
@@ -80,9 +80,17 @@ export async function POST(request: NextRequest) {
     }
 
     // Update order in Firebase
-    if (!db) {
-      console.error('Firebase db is not initialized for payment update');
-      return NextResponse.json({ error: 'Database connection failed' }, { status: 500 });
+    const firebaseStatus = getFirebaseStatus();
+    if (!firebaseStatus.isInitialized) {
+      console.error('Firebase not properly initialized for payment update:', firebaseStatus);
+      return NextResponse.json(
+        { 
+          error: 'Database connection failed', 
+          details: 'Service temporarily unavailable',
+          firebase: firebaseStatus
+        },
+        { status: 503 }
+      );
     }
     
     const orderRef = doc(db, 'orders', orderId);
