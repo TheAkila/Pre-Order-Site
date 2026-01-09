@@ -25,9 +25,7 @@ export default function PrivacyPage() {
               <p className="font-body text-slate-300">How we protect and handle your personal information</p>
             </div>
           </div>
-          <p className="font-body text-sm text-slate-400">
-            Last Updated: {new Date().toLocaleDateString()}
-          </p>
+          
         </div>
       </div>
 
