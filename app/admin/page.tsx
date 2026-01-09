@@ -48,42 +48,77 @@ export default function AdminPage() {
   const fetchOrders = async () => {
     setLoading(true);
     setError(null);
-    console.log('Fetching orders...');
+    console.log('Fetching orders from:', window.location.origin + '/api/orders');
+    console.log('Current time:', new Date().toISOString());
+    
     try {
       const response = await fetch('/api/orders', {
+        method: 'GET',
         cache: 'no-store',
         headers: {
           'Content-Type': 'application/json',
         },
       });
-      console.log('Response status:', response.status);
-      console.log('Response headers:', response.headers);
+      
+      console.log('Response received:');
+      console.log('- Status:', response.status);
+      console.log('- Status Text:', response.statusText);
+      console.log('- Headers:', Object.fromEntries(response.headers.entries()));
+      console.log('- URL:', response.url);
+      console.log('- OK:', response.ok);
       
       if (!response.ok) {
-        throw new Error('Failed to fetch orders');
+        const errorText = await response.text();
+        console.error('Error response:', errorText);
+        throw new Error(`HTTP ${response.status}: ${response.statusText}\nDetails: ${errorText}`);
       }
       
       const text = await response.text();
-      console.log('Raw response text:', text);
+      console.log('Raw response text length:', text.length);
+      console.log('Raw response preview:', text.substring(0, 200) + (text.length > 200 ? '...' : ''));
       
-      const data = JSON.parse(text);
+      if (!text.trim()) {
+        throw new Error('Empty response received from server');
+      }
+      
+      let data;
+      try {
+        data = JSON.parse(text);
+      } catch (parseError) {
+        console.error('JSON parsing error:', parseError);
+        console.error('Raw text that failed to parse:', text);
+        throw new Error(`Invalid JSON response: ${parseError instanceof Error ? parseError.message : 'Unknown parsing error'}`);
+      }
+      
       console.log('Parsed data:', data);
       console.log('Data type:', typeof data);
       console.log('Is array:', Array.isArray(data));
-      console.log('Data length:', Array.isArray(data) ? data.length : 'Not an array');
+      
+      if (data.error) {
+        throw new Error(`Server error: ${data.error}${data.details ? ` - ${data.details}` : ''}`);
+      }
       
       if (Array.isArray(data)) {
         setOrders(data);
-        console.log('Orders state set with', data.length, 'items');
+        console.log('Orders state set successfully with', data.length, 'items');
       } else {
         console.error('Data is not an array:', data);
-        setError('Invalid data format received from server');
+        setError(`Invalid data format: expected array, got ${typeof data}`);
       }
     } catch (err) {
-      console.error('Error fetching orders:', err);
-      setError(err instanceof Error ? err.message : 'Failed to fetch orders');
+      console.error('Fetch orders error:', err);
+      console.error('Error type:', typeof err);
+      console.error('Error details:', {
+        message: err instanceof Error ? err.message : String(err),
+        stack: err instanceof Error ? err.stack : undefined,
+        name: err instanceof Error ? err.name : undefined
+      });
+      
+      const errorMessage = err instanceof Error ? err.message : 'Failed to fetch orders';
+      setError(errorMessage);
     } finally {
       setLoading(false);
+      console.log('Fetch orders completed');
     }
   };
 

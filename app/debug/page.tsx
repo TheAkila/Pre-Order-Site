@@ -1,9 +1,15 @@
 'use client';
 
-import React from 'react';
+import React, { useState } from 'react';
 import Link from 'next/link';
 
 export default function DebugPage() {
+  const [testResults, setTestResults] = useState<any>(null);
+  const [ordersTest, setOrdersTest] = useState<any>(null);
+  const [envTest, setEnvTest] = useState<any>(null);
+  const [ordersSimpleTest, setOrdersSimpleTest] = useState<any>(null);
+  const [loading, setLoading] = useState(false);
+  
   const envVars = {
     FIREBASE_API_KEY: process.env.NEXT_PUBLIC_FIREBASE_API_KEY ? '✓ Set' : '✗ Missing',
     FIREBASE_AUTH_DOMAIN: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN ? '✓ Set' : '✗ Missing',
@@ -19,11 +25,90 @@ export default function DebugPage() {
     PREORDER_CLOSES: process.env.NEXT_PUBLIC_PREORDER_CLOSES || 'Not set',
   };
 
+  const testApiEndpoint = async () => {
+    setLoading(true);
+    try {
+      const response = await fetch('/api/test');
+      const data = await response.json();
+      setTestResults({ status: response.status, data });
+    } catch (error) {
+      setTestResults({ 
+        error: error instanceof Error ? error.message : 'Unknown error',
+        status: 'failed'
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const testOrdersEndpoint = async () => {
+    setLoading(true);
+    try {
+      const response = await fetch('/api/orders');
+      const text = await response.text();
+      let data;
+      try {
+        data = JSON.parse(text);
+      } catch (e) {
+        data = text;
+      }
+      setOrdersTest({ 
+        status: response.status, 
+        statusText: response.statusText,
+        ok: response.ok,
+        data,
+        headers: Object.fromEntries(response.headers.entries())
+      });
+    } catch (error) {
+      setOrdersTest({ 
+        error: error instanceof Error ? error.message : 'Unknown error',
+        status: 'failed'
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const testEnvEndpoint = async () => {
+    setLoading(true);
+    try {
+      const response = await fetch('/api/env-check');
+      const data = await response.json();
+      setEnvTest({ status: response.status, data });
+    } catch (error) {
+      setEnvTest({ 
+        error: error instanceof Error ? error.message : 'Unknown error',
+        status: 'failed'
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const testOrdersSimpleEndpoint = async () => {
+    setLoading(true);
+    try {
+      const response = await fetch('/api/orders-test');
+      const data = await response.json();
+      setOrdersSimpleTest({ status: response.status, data });
+    } catch (error) {
+      setOrdersSimpleTest({ 
+        error: error instanceof Error ? error.message : 'Unknown error',
+        status: 'failed'
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-slate-50 p-8">
       <div className="max-w-2xl mx-auto">
-        <h1 className="text-3xl font-bold mb-6">Environment Variables Debug</h1>
-        <div className="bg-white rounded-lg shadow p-6">
+        <h1 className="text-3xl font-bold mb-6">Debug Dashboard</h1>
+        
+        {/* Environment Variables */}
+        <div className="bg-white rounded-lg shadow p-6 mb-6">
+          <h2 className="text-xl font-bold mb-4">Environment Variables</h2>
           <table className="w-full">
             <thead>
               <tr className="border-b">
@@ -46,35 +131,87 @@ export default function DebugPage() {
           </table>
         </div>
 
-        <div className="mt-6 bg-white rounded-lg shadow p-6">
-          <h2 className="text-xl font-bold mb-4">API Test</h2>
-          <button
-            onClick={async () => {
-              try {
-                const response = await fetch('/api/orders');
-                const data = await response.json();
-                console.log('API Response:', data);
-                alert(`API returned ${response.status}: ${JSON.stringify(data).slice(0, 100)}...`);
-              } catch (err) {
-                console.error('API Error:', err);
-                alert(`API Error: ${err}`);
-              }
-            }}
-            className="bg-red-600 text-white px-6 py-2 rounded-lg hover:bg-red-700"
-          >
-            Test /api/orders
-          </button>
+        {/* API Tests */}
+        <div className="bg-white rounded-lg shadow p-6 mb-6">
+          <h2 className="text-xl font-bold mb-4">API Tests</h2>
+          <div className="space-y-4">
+            <div className="grid grid-cols-2 gap-4">
+              <button
+                onClick={testApiEndpoint}
+                disabled={loading}
+                className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 disabled:opacity-50"
+              >
+                {loading ? 'Testing...' : 'Test /api/test'}
+              </button>
+              <button
+                onClick={testEnvEndpoint}
+                disabled={loading}
+                className="bg-purple-600 text-white px-4 py-2 rounded hover:bg-purple-700 disabled:opacity-50"
+              >
+                {loading ? 'Testing...' : 'Test /api/env-check'}
+              </button>
+              <button
+                onClick={testOrdersSimpleEndpoint}
+                disabled={loading}
+                className="bg-yellow-600 text-white px-4 py-2 rounded hover:bg-yellow-700 disabled:opacity-50"
+              >
+                {loading ? 'Testing...' : 'Test /api/orders-test'}
+              </button>
+              <button
+                onClick={testOrdersEndpoint}
+                disabled={loading}
+                className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 disabled:opacity-50"
+              >
+                {loading ? 'Testing...' : 'Test /api/orders (Full)'}
+              </button>
+            </div>
+            
+            {testResults && (
+              <div className="mt-4 p-4 bg-gray-100 rounded">
+                <h3 className="font-bold">Test API Results:</h3>
+                <pre className="text-xs overflow-x-auto mt-2">
+                  {JSON.stringify(testResults, null, 2)}
+                </pre>
+              </div>
+            )}
+            
+            {envTest && (
+              <div className="mt-4 p-4 bg-blue-50 rounded">
+                <h3 className="font-bold">Environment Check Results:</h3>
+                <pre className="text-xs overflow-x-auto mt-2">
+                  {JSON.stringify(envTest, null, 2)}
+                </pre>
+              </div>
+            )}
+            
+            {ordersSimpleTest && (
+              <div className="mt-4 p-4 bg-yellow-50 rounded">
+                <h3 className="font-bold">Orders Test Results:</h3>
+                <pre className="text-xs overflow-x-auto mt-2">
+                  {JSON.stringify(ordersSimpleTest, null, 2)}
+                </pre>
+              </div>
+            )}
+            
+            {ordersTest && (
+              <div className="mt-4 p-4 bg-green-50 rounded">
+                <h3 className="font-bold">Orders API Results:</h3>
+                <pre className="text-xs overflow-x-auto mt-2">
+                  {JSON.stringify(ordersTest, null, 2)}
+                </pre>
+              </div>
+            )}
+          </div>
         </div>
 
-        <div className="mt-6 bg-yellow-50 border border-yellow-200 rounded-lg p-4">
-          <h3 className="font-bold mb-2">⚠️ Instructions:</h3>
-          <ol className="list-decimal list-inside space-y-1 text-sm">
-            <li>All variables should show &quot;✓ Set&quot;</li>
-            <li>If any show &quot;✗ Missing&quot;, add them in Vercel Settings → Environment Variables</li>
-            <li>After adding variables, redeploy your app</li>
-            <li>Click &quot;Test /api/orders&quot; to verify API connectivity</li>
-            <li>Check browser console for detailed errors</li>
-          </ol>
+        {/* Client Info */}
+        <div className="bg-white rounded-lg shadow p-6 mb-6">
+          <h2 className="text-xl font-bold mb-4">Client Info</h2>
+          <div className="text-sm space-y-2">
+            <p><strong>User Agent:</strong> {typeof window !== 'undefined' ? window.navigator.userAgent : 'N/A'}</p>
+            <p><strong>Current URL:</strong> {typeof window !== 'undefined' ? window.location.href : 'N/A'}</p>
+            <p><strong>Timestamp:</strong> {new Date().toISOString()}</p>
+          </div>
         </div>
 
         <div className="mt-6 text-center">
