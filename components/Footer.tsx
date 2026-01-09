@@ -1,5 +1,6 @@
 import { Mail, Instagram } from 'lucide-react';
 import Image from 'next/image';
+import Link from 'next/link';
 
 export default function Footer() {
   return (
@@ -69,12 +70,12 @@ export default function Footer() {
             &copy; {new Date().getFullYear()} Lifting Social. All rights reserved.
           </p>
           <div className="flex gap-4 sm:gap-6">
-            <a href="#" className="font-body text-[10px] sm:text-xs text-slate-500 hover:text-white transition-colors min-h-[44px] sm:min-h-0 flex items-center touch-manipulation">
+            <Link href="/privacy" className="font-body text-[10px] sm:text-xs text-slate-500 hover:text-white transition-colors min-h-[44px] sm:min-h-0 flex items-center touch-manipulation">
               Privacy Policy
-            </a>
-            <a href="#" className="font-body text-[10px] sm:text-xs text-slate-500 hover:text-white transition-colors min-h-[44px] sm:min-h-0 flex items-center touch-manipulation">
+            </Link>
+            <Link href="/terms" className="font-body text-[10px] sm:text-xs text-slate-500 hover:text-white transition-colors min-h-[44px] sm:min-h-0 flex items-center touch-manipulation">
               Terms of Service
-            </a>
+            </Link>
           </div>
         </div>
       </div>

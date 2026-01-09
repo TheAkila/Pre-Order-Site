@@ -21,4 +21,6 @@ export interface OrderFormData {
   phone: string;
   size: TShirtSize;
   quantity: number;
+  acceptedTerms: boolean;
+  acceptedPrivacy: boolean;
 }

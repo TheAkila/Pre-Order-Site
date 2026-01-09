@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import Link from 'next/link';
 import { OrderFormData, TShirtSize } from '@/types/order';
 import { Loader2, ShoppingBag, User, Phone, Ruler, Hash } from 'lucide-react';
 
@@ -10,6 +11,8 @@ export default function OrderForm() {
     phone: '',
     size: 'M',
     quantity: 1,
+    acceptedTerms: false,
+    acceptedPrivacy: false,
   });
 
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -33,6 +36,12 @@ export default function OrderForm() {
       }
       if (formData.quantity < 1) {
         throw new Error('Quantity must be at least 1');
+      }
+      if (!formData.acceptedTerms) {
+        throw new Error('Please accept the Terms of Service');
+      }
+      if (!formData.acceptedPrivacy) {
+        throw new Error('Please accept the Privacy Policy');
       }
 
       // Create order
@@ -179,10 +188,59 @@ export default function OrderForm() {
               </p>
             </div>
 
+            {/* Legal Agreement Checkboxes */}
+            <div className="space-y-4 bg-slate-50 rounded-xl p-4 sm:p-5">
+              <div className="flex items-start gap-3">
+                <input
+                  type="checkbox"
+                  id="acceptTerms"
+                  checked={formData.acceptedTerms}
+                  onChange={(e) => setFormData({ ...formData, acceptedTerms: e.target.checked })}
+                  className="mt-1 w-4 h-4 rounded border-slate-300 text-brand-red focus:ring-brand-red focus:ring-offset-0 accent-brand-red"
+                  required
+                  disabled={isSubmitting}
+                />
+                <label htmlFor="acceptTerms" className="font-body text-xs sm:text-sm text-slate-700 leading-relaxed">
+                  I agree to the{' '}
+                  <Link href="/terms" className="text-brand-red hover:underline font-medium">
+                    Terms of Service
+                  </Link>
+                  {' '}and understand the pre-order conditions, including production timelines and refund policy.
+                </label>
+              </div>
+
+              <div className="flex items-start gap-3">
+                <input
+                  type="checkbox"
+                  id="acceptPrivacy"
+                  checked={formData.acceptedPrivacy}
+                  onChange={(e) => setFormData({ ...formData, acceptedPrivacy: e.target.checked })}
+                  className="mt-1 w-4 h-4 rounded border-slate-300 text-brand-red focus:ring-brand-red focus:ring-offset-0 accent-brand-red"
+                  required
+                  disabled={isSubmitting}
+                />
+                <label htmlFor="acceptPrivacy" className="font-body text-xs sm:text-sm text-slate-700 leading-relaxed">
+                  I acknowledge that I have read and agree to the{' '}
+                  <Link href="/privacy" className="text-brand-red hover:underline font-medium">
+                    Privacy Policy
+                  </Link>
+                  {' '}regarding the collection and use of my personal information.
+                </label>
+              </div>
+
+              {(error && (error.includes('Terms') || error.includes('Privacy'))) && (
+                <div className="bg-red-50 border border-red-200 rounded-lg p-3">
+                  <p className="font-body text-xs text-red-700 font-medium">
+                    {error}
+                  </p>
+                </div>
+              )}
+            </div>
+
             {/* Submit Button */}
             <button
               type="submit"
-              disabled={isSubmitting}
+              disabled={isSubmitting || !formData.acceptedTerms || !formData.acceptedPrivacy}
               className="btn-primary w-full text-base sm:text-lg disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-3 min-h-[56px]"
             >
               {isSubmitting ? (
