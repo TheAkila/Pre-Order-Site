@@ -166,7 +166,7 @@ export default function PrivacyPage() {
                 <div className="border-l-4 border-brand-red pl-6">
                   <h3 className="font-heading text-lg font-semibold text-brand-black mb-2">Firebase/Google Cloud</h3>
                   <p className="font-body text-slate-700 text-sm leading-relaxed">
-                    We use Google Firebase for secure data storage and management. Google's privacy policy applies to 
+                    We use Google Firebase for secure data storage and management. Google&apos;s privacy policy applies to 
                     this service. All data is stored in encrypted format with appropriate access controls.
                   </p>
                 </div>
@@ -241,7 +241,7 @@ export default function PrivacyPage() {
               <h2 className="font-heading text-2xl font-bold text-brand-black mb-4">Policy Updates</h2>
               <p className="font-body text-slate-700 text-sm leading-relaxed">
                 We may update this Privacy Policy from time to time. We will notify you of any changes by posting the new 
-                Privacy Policy on this page and updating the "Last Updated" date. You are advised to review this Privacy Policy 
+                Privacy Policy on this page and updating the &quot;Last Updated&quot; date. You are advised to review this Privacy Policy 
                 periodically for any changes.
               </p>
             </section>

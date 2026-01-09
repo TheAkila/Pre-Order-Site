@@ -21,7 +21,7 @@ export async function GET(request: NextRequest) {
 
     // Fetch order from Firebase
     const firebaseStatus = getFirebaseStatus();
-    if (!firebaseStatus.isInitialized) {
+    if (!firebaseStatus.isInitialized || !db) {
       console.error('Firebase not properly initialized for payment processing:', firebaseStatus);
       return NextResponse.json(
         { 

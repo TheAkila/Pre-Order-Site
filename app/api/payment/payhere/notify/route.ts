@@ -81,7 +81,7 @@ export async function POST(request: NextRequest) {
 
     // Update order in Firebase
     const firebaseStatus = getFirebaseStatus();
-    if (!firebaseStatus.isInitialized) {
+    if (!firebaseStatus.isInitialized || !db) {
       console.error('Firebase not properly initialized for payment update:', firebaseStatus);
       return NextResponse.json(
         { 
