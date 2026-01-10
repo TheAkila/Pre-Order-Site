@@ -176,16 +176,42 @@ export default function OrderForm() {
             </div>
 
             {/* Total Amount */}
-            <div className="bg-white rounded-xl sm:rounded-2xl p-5 sm:p-6 border-2 border-brand-black">
-              <div className="flex justify-between items-center">
-                <span className="font-body text-xs sm:text-sm font-medium text-slate-600">Total Amount</span>
+            <div className="bg-white rounded-xl sm:rounded-2xl p-5 sm:p-6 border-2 border-brand-black relative overflow-hidden">
+              {/* Discount Badge */}
+              <div className="absolute top-0 right-0 bg-gradient-to-br from-green-500 to-green-600 text-white px-3 py-1 text-xs font-bold rounded-bl-lg">
+                20% OFF
+              </div>
+              
+              {/* Regular vs Pre-Order Price Comparison */}
+              <div className="mb-4">
+                <div className="flex justify-between items-center mb-1">
+                  <span className="font-body text-xs text-slate-500">Regular Price:</span>
+                  <span className="font-body text-sm text-slate-400 line-through">
+                    LKR {(totalAmount * 1.2).toLocaleString()}
+                  </span>
+                </div>
+                <div className="flex justify-between items-center">
+                  <span className="font-body text-xs text-slate-500">Pre-Order Savings:</span>
+                  <span className="font-body text-sm font-semibold text-green-600">
+                    -LKR {(totalAmount * 0.2).toLocaleString()}
+                  </span>
+                </div>
+              </div>
+              
+              <div className="flex justify-between items-center border-t pt-3">
+                <span className="font-body text-xs sm:text-sm font-medium text-slate-600">Pre-Order Total</span>
                 <span className="font-heading text-2xl sm:text-3xl font-bold text-brand-black">
                   LKR {totalAmount.toLocaleString()}
                 </span>
               </div>
-              <p className="font-body text-xs text-slate-500 mt-2">
-                {formData.quantity} {formData.quantity === 1 ? 'item' : 'items'} · Size {formData.size}
-              </p>
+              <div className="flex justify-between items-center mt-2">
+                <p className="font-body text-xs text-slate-500">
+                  {formData.quantity} {formData.quantity === 1 ? 'item' : 'items'} · Size {formData.size}
+                </p>
+                <p className="font-body text-xs font-semibold text-green-600">
+                   20% Discount Applied
+                </p>
+              </div>
             </div>
 
             {/* Legal Agreement Checkboxes */}

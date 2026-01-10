@@ -30,6 +30,18 @@ export default function Hero() {
         Premium athletic wear for the modern lifter  refined materials, elevated cut, effortless performance.
       </p>
 
+      {/* Pre-Order Discount Banner */}
+      <div className="mt-6 sm:mt-8 bg-gradient-to-r from-brand-red to-red-600 text-white px-6 py-3 rounded-full shadow-lg mx-4">
+        <div className="flex items-center justify-center gap-2 text-center">
+         
+          <div>
+            <p className="font-heading text-sm sm:text-base font-bold">LIMITED TIME: 20% OFF PRE-ORDERS</p>
+            <p className="font-body text-xs sm:text-sm opacity-90">Ends {new Date(process.env.NEXT_PUBLIC_PREORDER_CLOSES || '2026-01-31').toLocaleDateString()}</p>
+          </div>
+          
+        </div>
+      </div>
+
       {/* Buttons */}
       <div className="mt-8 sm:mt-10 flex flex-col sm:flex-row gap-4 justify-center items-center w-full px-6 sm:px-0">
         <button

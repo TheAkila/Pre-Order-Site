@@ -57,17 +57,41 @@ export default function Product() {
 
         {/* Price & Deadline Cards */}
         <div className="grid sm:grid-cols-2 gap-4 sm:gap-6 max-w-4xl mx-auto">
-          <div className="bg-slate-50 rounded-2xl p-8 border border-slate-200">
-            <div className="flex items-center gap-3 mb-3">
+          <div className="bg-slate-50 rounded-2xl p-8 border border-slate-200 relative overflow-hidden">
+            {/* Pre-Order Discount Badge */}
+            <div className="absolute top-0 right-0 bg-gradient-to-br from-brand-red to-red-600 text-white px-4 py-2 text-xs font-bold rounded-bl-xl">
+              PRE-ORDER SPECIAL
+            </div>
+            
+            <div className="flex items-center gap-3 mb-4">
               <div className="w-10 h-10 bg-brand-black/10 rounded-xl flex items-center justify-center">
                 <Tag className="w-5 h-5 text-brand-black" />
               </div>
               <p className="font-body text-sm font-medium text-slate-600">PRICE</p>
             </div>
-            <p className="font-heading text-4xl font-bold text-brand-black">
+            
+            {/* Regular Price (crossed out) */}
+            <div className="mb-2">
+              <p className="font-body text-lg text-slate-400 line-through">
+                LKR {(parseInt(process.env.NEXT_PUBLIC_PRODUCT_PRICE || '2500') * 1.2).toLocaleString()}
+              </p>
+              <p className="font-body text-xs text-slate-500">Regular Price</p>
+            </div>
+            
+            {/* Pre-Order Price */}
+            <p className="font-heading text-4xl font-bold text-brand-black mb-2">
               LKR {(parseInt(process.env.NEXT_PUBLIC_PRODUCT_PRICE || '2500')).toLocaleString()}
             </p>
-            <p className="font-body text-sm text-slate-500 mt-2">Per unit · Limited stock</p>
+            
+            {/* Savings Display */}
+            <div className="bg-green-50 border border-green-200 rounded-lg p-3 mb-3">
+              <p className="font-body text-sm font-bold text-green-800">
+                 You Save: LKR {(parseInt(process.env.NEXT_PUBLIC_PRODUCT_PRICE || '2500') * 0.2).toLocaleString()}
+              </p>
+              <p className="font-body text-xs text-green-600">20% Pre-Order Discount</p>
+            </div>
+            
+            <p className="font-body text-sm text-slate-500">Per unit · Limited stock</p>
           </div>
 
           <div className="bg-gradient-to-br from-brand-black to-slate-900 rounded-2xl p-8 text-white">
